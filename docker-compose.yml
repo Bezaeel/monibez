@@ -1,0 +1,32 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=monibez
+      - POSTGRES_USER=monibez
+      - POSTGRES_DB=monibez
+    networks:
+      - monibez
+  monibez.api:
+    image: monibez
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    networks:
+      - monibez
+networks:
+  monibez:
+    driver: bridge
