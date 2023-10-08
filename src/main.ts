@@ -9,15 +9,18 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder()
-    .setTitle('monibez')
-    .setDescription('monibez Documentation')
-    .setVersion('1.0')
-    .addTag('monibez')
-    .build();
+  // only show swagger on dev
+  if (process.env.MODE == 'DEV') {
+    const config = new DocumentBuilder()
+      .setTitle('monibez')
+      .setDescription('monibez Documentation')
+      .setVersion('1.0')
+      .addTag('monibez')
+      .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, document);
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('swagger', app, document);
+  }
 
   app.enableCors();
 
@@ -40,6 +43,6 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new TransformInterceptor());
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT);
 }
 bootstrap();
